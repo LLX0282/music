@@ -3,12 +3,6 @@
         <div class="main_top">
             <div class="name">推送主题：</div>
             <el-input v-model="user_name" class="work_name" placeholder="请输入内容"></el-input>
-            <div class="block time">
-                <span class="demonstration">时间：</span>
-                <el-date-picker v-model="value2" type="datetimerange" :picker-options="pickerOptions"
-                    range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="right">
-                </el-date-picker>
-            </div>
             <template>
                 <div class="name-flag">状态：</div>
                 <div class="select">
