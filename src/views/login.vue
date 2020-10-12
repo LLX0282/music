@@ -32,7 +32,7 @@
                     password: this.password,
                     userType:'01'
                 };
-                this.$axios.post("prod-api/common/login", paramForm).then(res => {
+                this.$axios.post("prod-api/common/login",paramForm).then(res => {
                     if (200 == res.data.code) {
                         console.log("成功")
                         localStorage.setItem("token",res.data.token);

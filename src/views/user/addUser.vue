@@ -94,7 +94,7 @@
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) =>{
                     if(valid){
-                        this.$axios.post("prod-api/user/create",this.ruleForm).then(res => {
+                        this.$axios.post("prod-api/music/backend/user/create",this.ruleForm).then(res => {
                         if(res.data.code==200){
                             this.centerDialogVisible = false
                             this.$message({

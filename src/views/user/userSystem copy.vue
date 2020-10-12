@@ -97,7 +97,7 @@ import addUser from './addUser'
         },
         methods: {
             getData(){//显示数据
-                this.$axios.get("prod-api/user/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.input+'&status='+this.value).then(res=>{
+                this.$axios.get("prod-api/music/backend/user/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.input+'&status='+this.value).then(res=>{
                     if(res.data.code=200){
                         console.log(res.data.rows)
                         this.tableData=res.data.rows
@@ -151,7 +151,7 @@ import addUser from './addUser'
             },
             handleEdit(cut,data){//行操作
                 console.log(data)
-                this.$axios.put('prod-api/user/'+cut+'/'+data).then(res=>{
+                this.$axios.put('prod-api/music/backend/user/'+cut+'/'+data).then(res=>{
                     if(res.data.code==200){
                         console.log('成功')
                         this.getData()
@@ -194,7 +194,7 @@ import addUser from './addUser'
                     arry.push(this.multipleSelection[index].userId)
                 }
                 console.log(this.multipleSelection[0])
-                this.$axios.put('prod-api/user/'+cut+'/'+arry).then(res=>{
+                this.$axios.put('prod-api/music/backend/user/'+cut+'/'+arry).then(res=>{
                     if(res.data.code==200){
                         console.log('成功')
                         this.getData()

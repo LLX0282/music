@@ -51,7 +51,7 @@
                         },
                         {
                             min: 3,
-                            max: 5,
+                            max: 11,
                             message: '长度在 3 到 5 个字符',
                             trigger: 'blur'
                         }
@@ -79,7 +79,7 @@
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) =>{
                     if(valid){
-                        this.$axios.post("prod-api/admin/create", this.ruleForm).then(res => {
+                        this.$axios.post("prod-api/music/backend/admin/create", this.ruleForm).then(res => {
                         if(res.data.code==200){
                             this.centerDialogVisible = false
                             this.$message({
@@ -103,7 +103,7 @@
                 // })
             },
             cancle(){//取消
-                centerDialogVisible = false
+                this.centerDialogVisible = false
                 this.$parent.getData()
             }
         }

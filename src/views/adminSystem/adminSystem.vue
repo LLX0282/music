@@ -130,7 +130,7 @@ import addAdmin from './addAdmin'
         },
         methods: {
             getData(){//显示数据
-                this.$axios.get("prod-api/admin/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.user_name+'&status='+this.value).then(res=>{
+                this.$axios.get("prod-api/music/backend/admin/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.user_name+'&status='+this.value).then(res=>{
                     if(res.data.code=200){
                         console.log(res.data.rows)
                          this.tableData=res.data.rows
@@ -181,7 +181,7 @@ import addAdmin from './addAdmin'
                 for( var index in this.multipleSelection){
                     arry.push(this.multipleSelection[index].adminId)
                 }
-                this.$axios.put('prod-api/admin/'+cut+'/'+arry).then(res=>{
+                this.$axios.put('prod-api/music/backend/admin/'+cut+'/'+arry).then(res=>{
                     if(res.data.code==200){
                         console.log('成功')
                         this.getData()
@@ -217,7 +217,7 @@ import addAdmin from './addAdmin'
             },
             handleEdit(cut,data){
                 console.log(data)
-                this.$axios.put('prod-api/admin/'+cut+'/'+data).then(res=>{
+                this.$axios.put('prod-api/music/backend/admin/'+cut+'/'+data).then(res=>{
                     if(res.data.code==200){
                         console.log('成功')
                         this.getData()
