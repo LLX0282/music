@@ -114,7 +114,7 @@
                 })
             },
             cancle(){//取消
-                centerDialogVisible = false
+                this.centerDialogVisible = false
                 this.$parent.getData()
             }
         }
