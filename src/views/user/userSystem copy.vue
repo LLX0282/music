@@ -20,7 +20,7 @@
             <el-button type="primary" @click="add" class="btn">添加</el-button>
             <el-button type="primary" @click="operate('enable')" class="btn">启用</el-button>
             <el-button type="primary" @click="operate('disable')" class="btn">停用</el-button>
-            <el-button type="primary" class="btn">重置密码</el-button>
+            <el-button type="primary" @click="reset()" class="btn">重置密码</el-button>
         </div>
         <!-- 用户列表 -->
         <div class="user-list">
@@ -29,7 +29,6 @@
                 <el-table-column type="selection" align='center' show-overflow-tooltip  width="55">
                 </el-table-column>
                 <el-table-column label="用户账号" align='center' show-overflow-tooltip  prop="account" >
-                   
                 </el-table-column>
                 <el-table-column label="姓名" align='center' show-overflow-tooltip  prop="nickName" >
                 </el-table-column>
@@ -120,6 +119,28 @@ import addUser from './addUser'
             },
             add(){
                 this.$refs.addUser.openAdd();
+            },
+            reset(){
+                var arry=[]
+                for( var index in this.multipleSelection){
+                    arry.push(this.multipleSelection[index].userId)
+                }
+                this.$axios.put('prod-api/music/backend/user/reset/'+arry).then(res=>{
+                    if(res.data.code==200){
+                        console.log('成功')
+                        this.getData()
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                    }else{
+                        this.getData()
+                        this.$message({
+                            message: '操作失败',
+                            type: 'error'
+                        });
+                    }
+                })
             },
             toggleSelection(rows) {
                 if (rows) {
