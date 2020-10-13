@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog title="创建管理员" :visible.sync="centerDialogVisible" width="800px" height="700px" class="main" center>
+        <el-dialog title="添加推送" :visible.sync="centerDialogVisible" width="800px" height="700px" class="main" center>
             <div class="text">
                 <div class="admin_row">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">

@@ -26,7 +26,7 @@
                             <ul class="music-wap" v-for="(item,i) in list" :key="i">
                                 <li class="leftName">{{item.fenlei}}</li>
                                 <li class="leftBtn">
-                                    <el-button type="primary">修改</el-button>
+                                    <el-button type="primary" @click="translate(item)">修改</el-button>
                                 </li>
                             </ul>
 
@@ -45,13 +45,17 @@
                     </div>
                 </div>
             </div>
-
+            <add-classify ref="add"></add-classify>
         </div>
     </div>
 </template>
 
 <script>
+import addClassify from './addClassify'
     export default {
+        components:{
+                addClassify,
+        },
         data() {
             return {
                 currentPage1: 5,
@@ -109,6 +113,9 @@
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+            },
+            translate(val){
+                this.$refs.add.openAdd(val)
             }
         }
     }
