@@ -41,7 +41,6 @@
                     account: '',
                     nickName: '',
                     remark: '',
-                    sex: '0'
                 },
                 rules: {
                     account: [{

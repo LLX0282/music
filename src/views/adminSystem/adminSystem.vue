@@ -45,7 +45,7 @@
                 </el-table-column>
                 <el-table-column prop="status"  align='center' show-overflow-tooltip label="状态">
                 </el-table-column>
-                <el-table-column label="操作"  align='center' show-overflow-tooltip>
+                <el-table-column label="操作"  align='center' show-overflow-tooltip >
                     <template slot-scope="scope">
                         <el-button size="mini" v-if="scope.row.status =='已禁用'" type="success"
                             @click="handleEdit('enable', scope.row.adminId)">启用</el-button>

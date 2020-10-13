@@ -2,7 +2,7 @@
     <div class="main">
         <div class="main_top">
             <div class="name">推送主题：</div>
-            <el-input v-model="user_name" class="work_name" placeholder="请输入内容"></el-input>
+            <el-input v-model="searchValue" class="work_name" placeholder="请输入内容"></el-input>
             <template>
                 <div class="name-flag">状态：</div>
                 <div class="select">
@@ -14,9 +14,10 @@
                 </div>
             </template>
             <el-button type="primary" @click="getData" class="btn">查询</el-button>
+            <el-button type="primary" @click="search" class="btn">重置</el-button>
         </div>
         <div class="all_btn">
-            <el-button type="primary" class="btn">添加</el-button>
+            <el-button type="primary" class="btn" @click="add">添加</el-button>
             <el-button type="primary" @click="operate('enable')" class="btn">启用</el-button>
             <el-button type="primary" @click="operate('disable')" class="btn">禁用</el-button>
         </div>
@@ -26,23 +27,27 @@
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
-                <el-table-column label="推送主题" prop="account">
+                <el-table-column label="推送主题" align='center' show-overflow-tooltip prop="title">
                 </el-table-column>
-                <el-table-column label="发布者" prop="nickName">
+                <el-table-column label="发布者" align='center' show-overflow-tooltip prop="createBy">
                 </el-table-column>
-                <el-table-column label="内容" prop="remark">
+                <el-table-column label="内容" align='center' show-overflow-tooltip prop="introduce">
                 </el-table-column>
-                <el-table-column label="创建时间" prop="remark">
-                </el-table-column>
-                <el-table-column prop="status" label="状态">
-                </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="图片" align='center' show-overflow-tooltip >
                     <template slot-scope="scope">
-                        <el-button size="mini"  type="primary" @click="handleEdit('enable', scope.row.adminId)">修改</el-button>
+                        <img :src="scope.row.imgUrl" alt="" class="img">
+                    </template>
+                </el-table-column>
+                <el-table-column prop="status" align='center' show-overflow-tooltip label="状态">
+                </el-table-column>
+                <el-table-column label="操作" align='center' show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="primary" @click="handleEdit('enable', scope.row.adminId)">修改
+                        </el-button>
                         <el-button size="mini" v-if="scope.row.status =='已禁用'" type="success"
-                            @click="handleEdit('enable', scope.row.adminId)">启用</el-button>
+                            @click="handleEdit('enable', scope.row.pushId)">启用</el-button>
                         <el-button size="mini" v-if="scope.row.status =='已启用'" type="danger"
-                            @click="handleEdit('disable', scope.row.adminId)">禁用
+                            @click="handleEdit('disable', scope.row.pushId)">禁用
                         </el-button>
                     </template>
                 </el-table-column>
@@ -57,14 +62,19 @@
                 </div>
             </div>
         </div>
+        <add-pelling ref="add"></add-pelling>
     </div>
 </template>
 
 <script>
+    import addPelling from './addproelling'
     export default {
+        components: {
+            addPelling,
+        },
         data() {
             return {
-                user_name: '',
+                searchValue: '',
                 options: [{ //状态
                     value: '选项1',
                     label: '已启用'
@@ -76,39 +86,12 @@
                 multipleSelection: [], //选中的行
                 tableData: [],
                 //时间选择
-                pickerOptions: {
-                    shortcuts: [{
-                        text: '最近一周',
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: '最近一个月',
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, {
-                        text: '最近三个月',
-                        onClick(picker) {
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }]
-                },
                 value2: '',
                 page: {
                     pages: 0, //
                     total: 0, //总共多少条
                     pageSize: 10, //显示条数
-                    pageNum: 1//第几页
+                    pageNum: 1 //第几页
                 },
             }
         },
@@ -116,58 +99,58 @@
             this.getData()
         },
         methods: {
-            getData(){//显示数据
-                this.$axios.get("prod-api/admin/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&user_name='+this.user_name).then(res=>{
-                    if(res.data.code=200){
+            getData() { //显示数据
+                this.$axios.get("prod-api/music/backend/push/list?" + "pageNum=" + this.page.pageNum + "&pageSize=" +
+                    this.page.pageSize + '&searchValue=' + this.searchValue + "&status=" + this.value).then(res => {
+                    if (res.data.code = 200) {
                         console.log(res.data.rows)
-                         this.tableData=res.data.rows
-                        for(var index in this.tableData )
-                        {   
-                            if( this.tableData[index].status==1){
-                                this.tableData[index].status='已启用'
+                        this.tableData = res.data.rows
+                        for (var index in this.tableData) {
+                            if (this.tableData[index].status == 0) {
+                                this.tableData[index].status = '已启用'
+                            } else if (this.tableData[index].status == 1) {
+                                this.tableData[index].status = '已禁用'
                             }
-                            else if(this.tableData[index].status==0){
-                                this.tableData[index].status='已禁用'
-                            }
+                            this.tableData[index].imgUrl='prod-api'+this.tableData[index].imgUrl
                         }
                     }
                 })
             },
-            operate(cut){//启用//停用
-                if(cut=='enable'&&this.judgeState(cut)!=0){
+            operate(cut) { //启用//停用
+                if (cut == 'enable' && this.judgeState(cut) != 0) {
                     console.log(this.judgeState)
                     this.ask(cut)
-                }else if(cut=='enable'&&this.judgeState(cut)==0){
+                } else if (cut == 'enable' && this.judgeState(cut) == 0) {
                     this.$message({
-                            message: '已启用的账号不能启用',
-                            type: 'error'
-                        });
+                        message: '已启用的账号不能启用',
+                        type: 'error'
+                    });
                 }
-                if(cut=='disable'&&this.judgeState(cut)!=0){
+                if (cut == 'disable' && this.judgeState(cut) != 0) {
                     console.log(this.judgeState)
                     this.ask(cut)
-                }else if(cut=='disable'&&this.judgeState(cut)==0){
+                } else if (cut == 'disable' && this.judgeState(cut) == 0) {
                     this.$message({
-                            message: '已禁用的账号不能禁用',
-                            type: 'error'
-                        });
+                        message: '已禁用的账号不能禁用',
+                        type: 'error'
+                    });
                 }
-                
+
             },
-            ask(cut){//发送请求
-                var arry=[]
-                for( var index in this.multipleSelection){
-                    arry.push(this.multipleSelection[index].adminId)
+            ask(cut) { //发送请求
+                var arry = []
+                for (var index in this.multipleSelection) {
+                    arry.push(this.multipleSelection[index].pushId)
                 }
-                this.$axios.put('prod-api/admin/'+cut+'/'+arry).then(res=>{
-                    if(res.data.code==200){
+                this.$axios.put('prod-api/music/backend/push/' + cut + '/' + arry).then(res => {
+                    if (res.data.code == 200) {
                         console.log('成功')
                         this.getData()
                         this.$message({
                             message: '操作成功',
                             type: 'success'
                         });
-                    }else{
+                    } else {
                         this.getData()
                         this.$message({
                             message: '操作失败',
@@ -176,36 +159,35 @@
                     }
                 })
             },
-            judgeState(cut){//判断状态
-                if (cut=='enable'){
-                    for(var index in this.multipleSelection){
-                        
-                        if(this.multipleSelection[index].status=='已启用'){
+            judgeState(cut) { //判断状态
+                if (cut == 'enable') {
+                    for (var index in this.multipleSelection) {
+
+                        if (this.multipleSelection[index].status == '已启用') {
                             console.log(0)
                             return 0
                         }
                     }
-                }
-                else{
-                    for(var index in this.multipleSelection){
-                        
-                        if(this.multipleSelection[index].status=='已禁用'){
+                } else {
+                    for (var index in this.multipleSelection) {
+
+                        if (this.multipleSelection[index].status == '已禁用') {
                             return 0
                         }
                     }
                 }
             },
-            handleEdit(cut,data){
+            handleEdit(cut, data) {
                 console.log(data)
-                this.$axios.put('prod-api/admin/'+cut+'/'+data).then(res=>{
-                    if(res.data.code==200){
+                this.$axios.put('prod-api/music/backend/push/' + cut + '/' + data).then(res => {
+                    if (res.data.code == 200) {
                         console.log('成功')
                         this.getData()
                         this.$message({
                             message: '操作成功',
                             type: 'success'
                         });
-                    }else{
+                    } else {
                         this.getData()
                         this.$message({
                             message: '操作失败',
@@ -222,23 +204,29 @@
                 } else {
                     this.$refs.multipleTable.clearSelection();
                 }
-            }, 
+            },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
-               // console.log(this.multipleSelection)
+                console.log(this.multipleSelection)
             },
             handleSizeChange(val) {
                 console.log(val);
-                this.page.pageSize= val
+                this.page.pageSize = val
                 console.log(this.page.pageSize)
                 this.getData()
             },
             handleCurrentChange(val) {
                 console.log(val);
-                this.page.pageNum=val
+                this.page.pageNum = val
                 this.getData()
             },
-            //时间选择器
+            add() { //添加
+                this.$refs.add.openAdd();
+            },
+            search() { //重置
+                this.searchValue = ''
+                this.value = ''
+            }
 
         }
     }
@@ -263,6 +251,7 @@
                 margin-left: 100px;
             }
         }
+
         .name {
             float: left;
             font-size: 18px;
@@ -327,4 +316,11 @@
             top: 40px;
         }
     }
+    img{
+        width: 50px;
+        height: 50px;
+    }
+ ::v-deep .el-dialog{
+     height: auto;
+ }
 </style>
