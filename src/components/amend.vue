@@ -4,8 +4,11 @@
             <div class="text">
                 <div class="admin_row">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                        <el-form-item label="分类名" prop="account">
-                            <el-input v-model="ruleForm.account"></el-input>
+                        <el-form-item label="原密码" prop="password">
+                            <el-input v-model="ruleForm.password"></el-input>
+                        </el-form-item>
+                        <el-form-item label="新密码" prop="newpassword">
+                            <el-input v-model="ruleForm.newpassword"></el-input>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -25,18 +28,29 @@
             return {
                 centerDialogVisible: false,
                 ruleForm: {
-                    account: '',
-                   
+                    password: '',
+                    newpassword:''
                 },
                 rules: {
-                    account: [{
+                    password: [{
                             required: true,
-                            message: '分类名',
+                            message: '请输入原密码',
                             trigger: 'blur'
                         },
                         {
                             
-                            message: '请输入分类名',
+                            message: '请输入原密码',
+                            trigger: 'blur'
+                        }
+                    ],
+                    newpassword: [{
+                            required: true,
+                            message: '请输入新密码',
+                            trigger: 'blur'
+                        },
+                        {
+                            
+                            message: '请输入新密码',
                             trigger: 'blur'
                         }
                     ],
@@ -45,28 +59,28 @@
             };
         },
         methods: {
-            openAdd(val) {
+            open() {
                 this.centerDialogVisible = true
-                console.log(val)
-                this.ruleForm.account=val.name
             },
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) =>{
                     if(valid){
-                        this.$axios.post("prod-api/music/backend/admin/create", this.ruleForm).then(res => {
+                        this.$axios.put("prod-api/music/backend/change/updatePassword/"+this.ruleForm.password+"/"+this.ruleForm.newpassword).then(res => {
                         if(res.data.code==200){
                             this.centerDialogVisible = false
                             this.$message({
                             message:res.data.msg ,
                             type: 'success'
                         });
-                        this.$parent.getData()
+                        this.$router.push({
+                            path: `/`,
+                        })
                         }else{
                             this.$message({
                             message: res.data.msg,
                             type: 'error'
                         });
-                        this.$parent.getData()
+                        
                         }
                      })
                     }
@@ -107,6 +121,6 @@
         height: 126px;
     }
     ::v-deep .el-dialog {
-        height: 297px;
+        height: auto;
     }
 </style>

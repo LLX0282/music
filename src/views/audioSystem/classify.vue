@@ -3,7 +3,8 @@
         <div class="main_top">
             <div class="name">分类名：</div>
             <el-input v-model="input" class="work_name" placeholder="请输入内容"></el-input>
-            <el-button class="query" type="primary">查询</el-button>
+            <el-button class="query select" type="primary" @click="select">查询</el-button>
+            <el-button class="query" type="primary" @click="reset">重置</el-button>
         </div>
         <div>
             <!-- 分类列表 -->
@@ -24,7 +25,7 @@
 
                         <div class="music">
                             <ul class="music-wap" v-for="(item,i) in list" :key="i">
-                                <li class="leftName">{{item.fenlei}}</li>
+                                <li class="leftName">{{item.name}}</li>
                                 <li class="leftBtn">
                                     <el-button type="primary" @click="translate(item)">修改</el-button>
                                 </li>
@@ -38,10 +39,9 @@
                     <div class="foot">
 
                         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                            :current-page.sync="currentPage1" :page-size="100" layout="total, prev, pager, next"
-                            :total="1000">
+                            :current-page.sync="page.pageNum" :page-sizes="[10, 20, 30, 40]"
+                            layout="sizes, prev, pager, next" :total="1000">
                         </el-pagination>
-
                     </div>
                 </div>
             </div>
@@ -58,64 +58,53 @@ import addClassify from './addClassify'
         },
         data() {
             return {
-                currentPage1: 5,
                 input: '',
                 currentPage2: 1, //分页
-                list: [{
-                        fenlei: "古典音乐"
-                    },
-                    {
-                        fenlei: "摇滚"
-                    },
-                    {
-                        fenlei: "古典音乐"
-                    },
-
-                    {
-                        fenlei: "古典音乐"
-                    },
-                    {
-                        fenlei: "流行"
-                    },
-                    {
-                        fenlei: "安静"
-                    },
-                    {
-                        fenlei: "伤感"
-                    },
-                    {
-                        fenlei: "摇滚"
-                    },
-                    {
-                        fenlei: "古典音乐"
-                    },
-
-                    {
-                        fenlei: "古典音乐"
-                    },
-                    {
-                        fenlei: "流行"
-                    },
-                    {
-                        fenlei: "流行"
-                    },
-
-                ],
-                alltableData: {
-                    songNumber: 50,
-                    pageNum: 1,
-                }
+                list: [],
+                // alltableData: {
+                //     songNumber: 50,
+                //     pageNum: 1,
+                // }
+                page: {
+                    pages: 0, //
+                    total: 0, //总共多少条
+                    pageSize: 10, //显示条数
+                    pageNum: 1//第几页
+                },
             }
+        },
+        mounted(){
+            this.getData()
         },
         methods: {
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
+                this.page.pageSize=val
+                console.log(this.page.pageSize)
+                this.getData()
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+                this.page.pageNum=val
+                this.getData()
             },
             translate(val){
                 this.$refs.add.openAdd(val)
+            },
+            select(){
+                this.getData()
+            },
+            getData(){
+                this.$axios.get("prod-api/music/backend/songType/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.input).then(res=>{
+                    console.log(res)
+                    if(res.data.code==200){
+                        this.list=res.data.rows
+                        console.log(this.list)
+                    }
+                })
+            },
+            reset(){
+                this.input=''
             }
         }
     }
@@ -135,8 +124,12 @@ import addClassify from './addClassify'
             margin-bottom: 30px;
             //overflow: hidden;
             .query {
-                float: right;
-                margin-right: 19.25%;
+                float: left;
+                margin-left:50px;
+                margin-top: 10px;
+            }
+            .select{
+                margin-left: 400px;
             }
         }
 

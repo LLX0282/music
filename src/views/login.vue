@@ -9,13 +9,15 @@
                 <div class="left">管理员密码：</div>
                 <el-input class="right" placeholder="请输入密码" v-model="password" show-password></el-input>
             </div>
-            <el-button class="btn" @click="submit" type="primary">登录</el-button>
+            <el-button class="btn" @click.native.prevent="submit" @keydown.enter.native='submit' type="primary">登录
+            </el-button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
+
         data() {
             return {
                 username: "llx",
@@ -25,18 +27,32 @@
         mounted() {
 
         },
+        created() {
+            var _self = this;
+            document.onkeydown = function (e) {
+                if (window.event == undefined) {
+                    var key = e.keyCode;
+                } else {
+                    var key = window.event.keyCode;
+                }
+                if (key == 13) {
+                    _self.submit();
+                }
+            }
+        },
         methods: {
-            getData() {//登录接口
+
+            getData() { //登录接口
                 let paramForm = {
                     username: this.username,
                     password: this.password,
-                    userType:'01'
+                    userType: '01'
                 };
-                this.$axios.post("prod-api/common/login",paramForm).then(res => {
+                this.$axios.post("prod-api/music/common/login", paramForm).then(res => {
                     if (200 == res.data.code) {
                         console.log("成功")
-                        localStorage.setItem("token",res.data.token);
-                        localStorage.setItem("username",this.username);
+                        localStorage.setItem("token", res.data.token);
+                        localStorage.setItem("username", this.username);
                         this.$message({
                             message: '登录成功',
                             type: 'success'
@@ -44,21 +60,23 @@
                         this.$router.push({
                             path: `/audioSystem`,
                         })
-                        this.username='',
-                        this.password=''
+                        this.username = '',
+                            this.password = ''
                     } else {
                         this.$message({
                             message: res.data.msg,
                             type: 'error'
                         });
-                        this.username='',
-                        this.password=''
+                        this.username = '',
+                            this.password = ''
                     }
                 })
             },
             submit() {
+                console.log(1)
                 this.getData();
-            }
+            },
+
         }
     }
 </script>

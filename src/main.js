@@ -10,7 +10,7 @@ Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
 //请求拦截
 axios.interceptors.request.use(config => {
-  if ("prod-api/common/login" != config.url) {
+  if ("prod-api/music/common/login" != config.url) {
     if (localStorage.getItem("token")) {
       //请求头
       config.headers['Authorization'] = localStorage.getItem("token")

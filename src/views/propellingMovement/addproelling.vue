@@ -145,12 +145,12 @@
                             this.ruleForm.imgUrl = res.data.fileName;
                         }
                     })
-                    this.$axios.post('prod-api/music/common/upload', fd).then(res => {
-                        if (200 == res.data.code) {
-                            console.log(res.data.fileName);
-                            this.ruleForm.imgUrl = res.data.fileName;
-                        }
-                    })
+                    // this.$axios.post('prod-api/music/common/upload', fd).then(res => {
+                    //     if (200 == res.data.code) {
+                    //         console.log(res.data.fileName);
+                    //         this.ruleForm.imgUrl = res.data.fileName;
+                    //     }
+                    // })
                     console.log(1)
                 }
 
