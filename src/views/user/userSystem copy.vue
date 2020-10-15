@@ -169,6 +169,7 @@ import addUser from './addUser'
             clear(){//清楚输入想
                 this.input=''
                 this.value=''
+                this.getData()
             },
             handleEdit(cut,data){//行操作
                 console.log(data)

@@ -45,16 +45,16 @@
                     </div>
                 </div>
             </div>
-            <add-classify ref="add"></add-classify>
+            <m-classify ref="add"></m-classify>
         </div>
     </div>
 </template>
 
 <script>
-import addClassify from './addClassify'
+import mClassify from './mClassify'
     export default {
         components:{
-                addClassify,
+                mClassify,
         },
         data() {
             return {

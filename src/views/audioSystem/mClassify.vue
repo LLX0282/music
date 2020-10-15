@@ -53,7 +53,7 @@
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) =>{
                     if(valid){
-                        this.$axios.post("prod-api/music/backend/admin/create", this.ruleForm).then(res => {
+                        this.$axios.put("prod-api/music/backend/songType/update", this.ruleForm).then(res => {
                         if(res.data.code==200){
                             this.centerDialogVisible = false
                             this.$message({

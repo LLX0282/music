@@ -15,7 +15,8 @@
                             <el-form-item label="主题图片" prop="title">
                             <el-upload :limit=1 ref='upload' action="https://jsonplaceholder.typicode.com/posts/"
                                 list-type="picture-card" :on-preview="handlePictureCardPreview"
-                                :before-upload='beforeAvatarUpload' :on-remove="handleRemove">
+                                :before-upload='beforeAvatarUpload' :on-remove="handleRemove"
+                                :file-list="fileList">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             </el-form-item>
@@ -47,8 +48,10 @@
                     title: '',
                     introduce: '',
                     //createBy: '',
-                    imgUrl:''
+                    imgUrl:'',
+                    pushId:''
                 },
+                fileList: [{ url: ''}],
                 rules: {
                     title: [{
                             required: true,
@@ -75,16 +78,23 @@
                 }
             };
         },
-
         methods: {
-            openAdd() {
+            openAdd(val) {
+                this.fileList[0].url='prod-api'+val.imgUrl
                 this.centerDialogVisible = true
+                console.log(val)
+                this.ruleForm.title=val.title
+                this.ruleForm.imgUrl= val.imgUrl
+                this.ruleForm.introduce= val.introduce
+                this.ruleForm.pushId= val.pushId
+                console.log(val.imgUrl)
                 //this.ruleForm.createBy = localStorage.getItem("username")
             },
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) => {
                     if (valid) {
-                        this.$axios.post("prod-api/music/backend/push/create", this.ruleForm).then(res => {
+                        
+                        this.$axios.put("prod-api/music/backend/push/update", this.ruleForm).then(res => {
                             if (res.data.code == 200) {
                                 this.centerDialogVisible = false
                                 this.$message({

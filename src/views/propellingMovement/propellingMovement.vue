@@ -35,14 +35,14 @@
                 </el-table-column>
                 <el-table-column label="图片" align='center' show-overflow-tooltip >
                     <template slot-scope="scope">
-                        <img :src="scope.row.imgUrl" alt="" class="img">
+                        <img :src="'prod-api'+scope.row.imgUrl" alt="" class="img">
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" align='center' show-overflow-tooltip label="状态">
                 </el-table-column>
                 <el-table-column label="操作" align='center' show-overflow-tooltip>
                     <template slot-scope="scope">
-                        <el-button size="mini" type="primary" @click="handleEdit('enable', scope.row.adminId)">修改
+                        <el-button size="mini" type="primary" @click="tuisong( scope.row)">修改
                         </el-button>
                         <el-button size="mini" v-if="scope.row.status =='已禁用'" type="success"
                             @click="handleEdit('enable', scope.row.pushId)">启用</el-button>
@@ -63,23 +63,26 @@
             </div>
         </div>
         <add-pelling ref="add"></add-pelling>
+        <modify ref="updata"></modify>
     </div>
 </template>
 
 <script>
     import addPelling from './addproelling'
+    import modify from './modify'
     export default {
         components: {
             addPelling,
+            modify
         },
         data() {
             return {
                 searchValue: '',
                 options: [{ //状态
-                    value: '选项1',
+                    value: '0',
                     label: '已启用'
                 }, {
-                    value: '选项2',
+                    value: '1',
                     label: '已停用'
                 }],
                 value: '', //已选中
@@ -111,7 +114,7 @@
                             } else if (this.tableData[index].status == 1) {
                                 this.tableData[index].status = '已禁用'
                             }
-                            this.tableData[index].imgUrl='prod-api'+this.tableData[index].imgUrl
+                            
                         }
                     }
                 })
@@ -226,6 +229,10 @@
             search() { //重置
                 this.searchValue = ''
                 this.value = ''
+                this.getData()
+            },
+            tuisong(val){
+                this.$refs.updata.openAdd(val);
             }
 
         }
