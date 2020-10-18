@@ -6,6 +6,7 @@
             <el-button class="query select" type="primary" @click="select">查询</el-button>
             <el-button class="query" type="primary" @click="reset">重置</el-button>
         </div>
+            <el-button class="query add" type="primary" @click="add">添加</el-button>
         <div>
             <!-- 分类列表 -->
 
@@ -45,16 +46,19 @@
                     </div>
                 </div>
             </div>
-            <m-classify ref="add"></m-classify>
+            <m-classify ref="m"></m-classify>
+            <add-classify ref="add"></add-classify>
         </div>
     </div>
 </template>
 
 <script>
 import mClassify from './mClassify'
+import addClassify from './addClassify'
     export default {
         components:{
                 mClassify,
+                addClassify
         },
         data() {
             return {
@@ -89,7 +93,10 @@ import mClassify from './mClassify'
                 this.getData()
             },
             translate(val){
-                this.$refs.add.openAdd(val)
+                this.$refs.m.openAdd(val)
+            },
+            add(){
+                this.$refs.add.openAdd()
             },
             select(){
                 this.getData()
@@ -234,5 +241,8 @@ import mClassify from './mClassify'
             left: 30%;
             top: 40px;
         }
+    }
+    .add{
+        margin-left: 20px;
     }
 </style>
