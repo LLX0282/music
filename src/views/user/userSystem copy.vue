@@ -213,7 +213,7 @@ import addUser from './addUser'
             ask(cut){//发送请求
                 var arry=[]
                 for( var index in this.multipleSelection){
-                    arry.push(this.multipleSelection[index].userId)
+                    arry.push(this.multipleSelection[index].commentId)
                 }
                 console.log(this.multipleSelection[0])
                 this.$axios.put('prod-api/music/backend/user/'+cut+'/'+arry).then(res=>{

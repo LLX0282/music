@@ -19,11 +19,12 @@
                     </el-select>
                 </div>
             </template>
-            <el-button type="primary" class="btn">查询</el-button>
+            <el-button type="primary" @click="select" class="btn">查询</el-button>
+            <el-button type="primary" @click="resetting" class="btn">重置</el-button>
         </div>
         <div class="all_btn">
-            <el-button type="primary" class="btn">通过</el-button>
-            <el-button type="primary" class="btn">屏蔽</el-button>
+            <el-button type="primary" @click="operate('enable')" class="btn">通过</el-button>
+            <el-button type="primary" @click="operate('disable')" class="btn">屏蔽</el-button>
         </div>
         <!-- 管理员列表 -->
         <div class="user-list">
@@ -31,24 +32,24 @@
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
-                <el-table-column label="用户名" prop="account">
+                <el-table-column label="用户名" prop="userName">
 
                 </el-table-column>
-                <el-table-column label="评论内容" prop="name">
+                <el-table-column label="评论内容" prop="content">
 
                 </el-table-column>
-                <el-table-column label="评论时间" prop="remak">
+                <el-table-column label="评论时间" prop="createTime">
 
                 </el-table-column>
-                <el-table-column prop="state" label="状态">
+                <el-table-column prop="status" label="状态">
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" class="btn">详情</el-button>
-                        <el-button size="mini" v-if="scope.row.state==0" type="success"
-                            @click="handleEdit(scope.$index, scope.row)">通过</el-button>
-                        <el-button size="mini" v-if="scope.row.state==1" type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">屏蔽
+                        <el-button size="mini" v-if="scope.row.status=='已通过'" type="danger"
+                            @click="handleEdit('disable', scope.row.commentId)">驳回</el-button>
+                        <el-button size="mini" v-if="scope.row.status=='已驳回'" type="success"
+                            @click="handleDelete('enable', scope.row.commentId)">通过
                         </el-button>
                     </template>
                 </el-table-column>
@@ -70,116 +71,24 @@
     export default {
         data() {
             return {
-
+                page: {
+                    pages: 0, //
+                    total: 0, //总共多少条
+                    pageSize: 10, //显示条数
+                    pageNum: 1//第几页
+                },
                 input: '',
                 options: [{ //状态
-                    value: '选项1',
-                    label: '未通过'
+                    value: '1',
+                    label: '已驳回'
                 }, {
-                    value: '选项2',
+                    value: '0',
                     label: '已通过'
                 }],
                 value: '', //已选中
                 multipleSelection: [], //选中的行
                 currentPage2: 1, //分页
-                tableData: [{
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 1
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 1
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 1
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },
-                {
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },{
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                },{
-                    account: "llxxxxx",
-                    name:"haha",
-                    remak: "biezhu",
-                    create_time:" 2020 - 2 - 19 12: 46",
-                    state: 0
-                }],
+                tableData: [],
                 //时间选择
                 pickerOptions: {
                     shortcuts: [{
@@ -212,10 +121,115 @@
             }
         },
         mounted() {
-
+            this.getData()
 
         },
         methods: {
+            select(){
+                this.getData()
+            },
+            resetting(){
+                this.input=''
+                this.value2=''
+                this.value=''
+            },
+            getData(){//显示数据
+                this.$axios.get("prod-api/music/backend/comment/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.input+'&createTime='+this.value2+'&status='+this.value).then(res=>{
+                    if(res.data.code=200){
+                        console.log(res.data.rows)
+                        this.tableData=res.data.rows
+                        for(var index in this.tableData )
+                        {   
+                            if( this.tableData[index].status==0){
+                                this.tableData[index].status='已通过'
+                                
+                            }
+                            else if(this.tableData[index].status==1){
+                                this.tableData[index].status='已驳回'
+                            }
+                        }
+                    }
+                })
+            },
+            operate(cut){//启用/停用
+                if(cut=='enable'&&this.judgeState(cut)!=0){
+                    console.log(this.judgeState)
+                    this.ask(cut)
+                }else if(cut=='enable'&&this.judgeState(cut)==0){
+                    this.$message({
+                            message: '已启用的账号不能启用',
+                            type: 'error'
+                        });
+                }
+                if(cut=='disable'&&this.judgeState(cut)!=0){
+                    console.log(this.judgeState)
+                    this.ask(cut)
+                }else if(cut=='disable'&&this.judgeState(cut)==0){
+                    this.$message({
+                            message: '已禁用的账号不能禁用',
+                            type: 'error'
+                        });
+                }
+            },
+            ask(cut){//发送请求
+                var arry=[]
+                for( var index in this.multipleSelection){
+                    arry.push(this.multipleSelection[index].commentId)
+                }
+                console.log(this.multipleSelection[0])
+                this.$axios.put('prod-api/music/backend/comment/'+cut+'/'+arry).then(res=>{
+                    if(res.data.code==200){
+                        console.log('成功')
+                        this.getData()
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                    }else{
+                        this.getData()
+                        this.$message({
+                            message: '操作失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            },
+            judgeState(cut){//判断状态
+                if (cut=='enable'){
+                    for(var index in this.multipleSelection){
+                        if(this.multipleSelection[index].status=='已启用'){
+                            console.log(0)
+                            return 0
+                        }
+                    }
+                }
+                else{
+                    for(var index in this.multipleSelection){
+                        if(this.multipleSelection[index].status=='已禁用'){
+                            return 0
+                        }
+                    }
+                }
+            },
+            handleEdit(cut,data){//行操作
+                console.log(data)
+                this.$axios.put('prod-api/music/backend/comment/'+cut+'/'+data).then(res=>{
+                    if(res.data.code==200){
+                        console.log('成功')
+                        this.getData()
+                        this.$message({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                    }else{
+                        this.getData()
+                        this.$message({
+                            message: '操作失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            },
             toggleSelection(rows) {
                 if (rows) {
                     rows.forEach(row => {
@@ -224,9 +238,6 @@
                 } else {
                     this.$refs.multipleTable.clearSelection();
                 }
-            },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
