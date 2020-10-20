@@ -22,7 +22,7 @@
                     <i class="iconfont icon-yonghu icon_pic icon_witch"></i>
                     <span slot="title">用户管理</span>
                 </el-menu-item>
-                <el-menu-item index="/adminSystem">
+                <el-menu-item v-if="role=='admin'" index="/adminSystem">
                     <i class="iconfont icon-guanliyuan icon_pic1 icon_witch"></i>
                     <span slot="title">管理员管理</span>
                 </el-menu-item>
@@ -43,11 +43,11 @@
     export default {
         data() {
             return {
-                
+              role: localStorage.getItem("role") 
             }
         },
         mounted(){
-
+            
         },
         methods: {
             handleOpen(key, keyPath) {

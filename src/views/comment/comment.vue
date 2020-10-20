@@ -19,8 +19,7 @@
                     </el-select>
                 </div>
             </template>
-            <el-button type="primary" @click="select" class="btn">查询</el-button>
-            <el-button type="primary" @click="resetting" class="btn">重置</el-button>
+            c
         </div>
         <div class="all_btn">
             <el-button type="primary" @click="operate('enable')" class="btn">通过</el-button>
@@ -35,6 +34,9 @@
                 <el-table-column label="用户名" prop="userName">
 
                 </el-table-column>
+                <el-table-column label="歌曲名" prop="songName">
+
+                </el-table-column>
                 <el-table-column label="评论内容" prop="content">
 
                 </el-table-column>
@@ -45,7 +47,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="primary" class="btn">详情</el-button>
+                        <el-button size="mini" type="primary" @click="xiangqing(scope.row)" class="btn">详情</el-button>
                         <el-button size="mini" v-if="scope.row.status=='已通过'" type="danger"
                             @click="handleEdit('disable', scope.row.commentId)">驳回</el-button>
                         <el-button size="mini" v-if="scope.row.status=='已驳回'" type="success"
@@ -58,24 +60,29 @@
             <div class="block foota">
                 <div class="foot">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                        :current-page.sync="currentPage2" :page-sizes="[100, 200, 300, 400]"
+                        :current-page.sync="page.pageNum" :page-sizes="[10, 20, 30, 40]"
                         layout="sizes, prev, pager, next" :total="1000">
                     </el-pagination>
                 </div>
             </div>
         </div>
+        <page ref="page"></page>
     </div>
 </template>
 
 <script>
+import page from './details'
     export default {
+        components:{
+            page
+        },
         data() {
             return {
                 page: {
                     pages: 0, //
                     total: 0, //总共多少条
                     pageSize: 10, //显示条数
-                    pageNum: 1//第几页
+                    pageNum: 1 //第几页
                 },
                 input: '',
                 options: [{ //状态
@@ -125,67 +132,89 @@
 
         },
         methods: {
-            select(){
+            xiangqing(val){
+                this.$refs.page.openAdd(val)
+            },
+            select() {
+                console.log(this.value2.toString())
+                var chinaStandard = this.value2.toString()
+                var Str=chinaStandard.lastIndexOf("\,");
+                console.log(Str)
+                this.value2=this.timeData(chinaStandard.substring(0,Str))+'/'+this.timeData(chinaStandard.substring(Str+1,chinaStandard.length))
+                console.log(this.value2)
                 this.getData()
             },
-            resetting(){
-                this.input=''
-                this.value2=''
-                this.value=''
+            timeData(chinaStandard){
+                var date = new Date(chinaStandard);
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                var minute = date.getMinutes();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                let time = y + '-' + m + '-' + d + ' ' + h + ':' + minute;
+                return time
             },
-            getData(){//显示数据
-                this.$axios.get("prod-api/music/backend/comment/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.input+'&createTime='+this.value2+'&status='+this.value).then(res=>{
-                    if(res.data.code=200){
+            resetting() {
+                this.input = ''
+                this.value2 = ''
+                this.value = ''
+            },
+            getData() { //显示数据
+                this.$axios.get("prod-api/music/backend/comment/list?" + "pageNum=" + this.page.pageNum + "&pageSize=" +
+                    this.page.pageSize + '&searchValue=' + this.input + '&createTime=' + this.value2 + '&status=' +
+                    this.value).then(res => {
+                    if (res.data.code = 200) {
                         console.log(res.data.rows)
-                        this.tableData=res.data.rows
-                        for(var index in this.tableData )
-                        {   
-                            if( this.tableData[index].status==0){
-                                this.tableData[index].status='已通过'
-                                
-                            }
-                            else if(this.tableData[index].status==1){
-                                this.tableData[index].status='已驳回'
+                        this.tableData = res.data.rows
+                        for (var index in this.tableData) {
+                            if (this.tableData[index].status == 0) {
+                                this.tableData[index].status = '已通过'
+
+                            } else if (this.tableData[index].status == 1) {
+                                this.tableData[index].status = '已驳回'
                             }
                         }
                     }
                 })
             },
-            operate(cut){//启用/停用
-                if(cut=='enable'&&this.judgeState(cut)!=0){
+            operate(cut) { //启用/停用
+                if (cut == 'enable' && this.judgeState(cut) != 0) {
                     console.log(this.judgeState)
                     this.ask(cut)
-                }else if(cut=='enable'&&this.judgeState(cut)==0){
+                } else if (cut == 'enable' && this.judgeState(cut) == 0) {
                     this.$message({
-                            message: '已启用的账号不能启用',
-                            type: 'error'
-                        });
+                        message: '已启用的账号不能启用',
+                        type: 'error'
+                    });
                 }
-                if(cut=='disable'&&this.judgeState(cut)!=0){
+                if (cut == 'disable' && this.judgeState(cut) != 0) {
                     console.log(this.judgeState)
                     this.ask(cut)
-                }else if(cut=='disable'&&this.judgeState(cut)==0){
+                } else if (cut == 'disable' && this.judgeState(cut) == 0) {
                     this.$message({
-                            message: '已禁用的账号不能禁用',
-                            type: 'error'
-                        });
+                        message: '已禁用的账号不能禁用',
+                        type: 'error'
+                    });
                 }
             },
-            ask(cut){//发送请求
-                var arry=[]
-                for( var index in this.multipleSelection){
+            ask(cut) { //发送请求
+                var arry = []
+                for (var index in this.multipleSelection) {
                     arry.push(this.multipleSelection[index].commentId)
                 }
                 console.log(this.multipleSelection[0])
-                this.$axios.put('prod-api/music/backend/comment/'+cut+'/'+arry).then(res=>{
-                    if(res.data.code==200){
+                this.$axios.put('prod-api/music/backend/comment/' + cut + '/' + arry).then(res => {
+                    if (res.data.code == 200) {
                         console.log('成功')
                         this.getData()
                         this.$message({
                             message: '操作成功',
                             type: 'success'
                         });
-                    }else{
+                    } else {
                         this.getData()
                         this.$message({
                             message: '操作失败',
@@ -194,34 +223,33 @@
                     }
                 })
             },
-            judgeState(cut){//判断状态
-                if (cut=='enable'){
-                    for(var index in this.multipleSelection){
-                        if(this.multipleSelection[index].status=='已启用'){
+            judgeState(cut) { //判断状态
+                if (cut == 'enable') {
+                    for (var index in this.multipleSelection) {
+                        if (this.multipleSelection[index].status == '已启用') {
                             console.log(0)
                             return 0
                         }
                     }
-                }
-                else{
-                    for(var index in this.multipleSelection){
-                        if(this.multipleSelection[index].status=='已禁用'){
+                } else {
+                    for (var index in this.multipleSelection) {
+                        if (this.multipleSelection[index].status == '已禁用') {
                             return 0
                         }
                     }
                 }
             },
-            handleEdit(cut,data){//行操作
+            handleEdit(cut, data) { //行操作
                 console.log(data)
-                this.$axios.put('prod-api/music/backend/comment/'+cut+'/'+data).then(res=>{
-                    if(res.data.code==200){
+                this.$axios.put('prod-api/music/backend/comment/' + cut + '/' + data).then(res => {
+                    if (res.data.code == 200) {
                         console.log('成功')
                         this.getData()
                         this.$message({
                             message: '操作成功',
                             type: 'success'
                         });
-                    }else{
+                    } else {
                         this.getData()
                         this.$message({
                             message: '操作失败',
@@ -273,6 +301,7 @@
                 margin-left: 100px;
             }
         }
+
         .name {
             float: left;
             font-size: 18px;

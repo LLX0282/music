@@ -57,9 +57,23 @@
                             message: '登录成功',
                             type: 'success'
                         });
-                        this.$router.push({
-                            path: `/audioSystem`,
+                        this.$axios.get("prod-api/music/common/getLoginInfo").then(res => {
+                            if (res.data.code == 200) {
+                                console.log(res.data.roles[0])
+                                if (res.data.roles[0] == "backend"||res.data.roles[0] == "admin") {
+                                    localStorage.setItem("role", res.data.roles[0]);
+                                    this.$router.push({
+                                        path: `/audioSystem`,
+                                    })
+                                } else {
+                                    this.$message({
+                                        message:'请用管理员账号登录',
+                                        type: 'error'
+                                    });
+                                }
+                            }
                         })
+
                         this.username = '',
                             this.password = ''
                     } else {
