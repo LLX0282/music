@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div class="main_top">
-            <div class="name">用户名：</div>
+            <div class="name">用户账号：</div>
             <el-input v-model="input" class="work_name" placeholder="请输入内容"></el-input>
             <template>
                 <div class="name-flag">状态：</div>

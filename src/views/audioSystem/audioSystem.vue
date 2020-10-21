@@ -161,8 +161,9 @@
             },
             row(val){//点击一行 里的数据
                 console.log(val)
+                sessionStorage.setItem("Musicdetail",JSON.stringify(val) )
                 this.$router.push({
-                            path: `/workDetails.vue`,
+                            path: `musicDetail`,
                         })
             }
         }

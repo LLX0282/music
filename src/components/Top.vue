@@ -50,7 +50,7 @@ import amend from './amend'
 
 <style lang="scss" scoped>
     .top {
-        min-width: 1440px;
+        min-width: 1700px;
         height: 100px;
         background-color: #52575b;
         line-height: 100px;

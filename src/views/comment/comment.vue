@@ -19,7 +19,11 @@
                     </el-select>
                 </div>
             </template>
-            c
+            <div class="selectBtn">
+                <el-button type="primary" @click="select" class="btn">查询</el-button>
+                <el-button type="primary" @click="resetting" class="btn">清空</el-button>
+            </div>
+
         </div>
         <div class="all_btn">
             <el-button type="primary" @click="operate('enable')" class="btn">通过</el-button>
@@ -31,7 +35,7 @@
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
-                <el-table-column label="用户名" prop="userName">
+                <el-table-column label="用户名" prop="nickName">
 
                 </el-table-column>
                 <el-table-column label="歌曲名" prop="songName">
@@ -51,7 +55,7 @@
                         <el-button size="mini" v-if="scope.row.status=='已通过'" type="danger"
                             @click="handleEdit('disable', scope.row.commentId)">驳回</el-button>
                         <el-button size="mini" v-if="scope.row.status=='已驳回'" type="success"
-                            @click="handleDelete('enable', scope.row.commentId)">通过
+                            @click="handleEdit('enable', scope.row.commentId)">通过
                         </el-button>
                     </template>
                 </el-table-column>
@@ -71,9 +75,9 @@
 </template>
 
 <script>
-import page from './details'
+    import page from './details'
     export default {
-        components:{
+        components: {
             page
         },
         data() {
@@ -132,19 +136,20 @@ import page from './details'
 
         },
         methods: {
-            xiangqing(val){
+            xiangqing(val) {
                 this.$refs.page.openAdd(val)
             },
             select() {
                 console.log(this.value2.toString())
                 var chinaStandard = this.value2.toString()
-                var Str=chinaStandard.lastIndexOf("\,");
+                var Str = chinaStandard.lastIndexOf("\,");
                 console.log(Str)
-                this.value2=this.timeData(chinaStandard.substring(0,Str))+'/'+this.timeData(chinaStandard.substring(Str+1,chinaStandard.length))
+                this.value2 = this.timeData(chinaStandard.substring(0, Str)) + '/' + this.timeData(chinaStandard
+                    .substring(Str + 1, chinaStandard.length))
                 console.log(this.value2)
                 this.getData()
             },
-            timeData(chinaStandard){
+            timeData(chinaStandard) {
                 var date = new Date(chinaStandard);
                 var y = date.getFullYear();
                 var m = date.getMonth() + 1;
@@ -269,12 +274,16 @@ import page from './details'
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+                this.page.pageSize=val
+                this.getData()
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+                this.page.pageNum=val
+                this.getData()
             },
             //时间选择器
 
@@ -286,7 +295,7 @@ import page from './details'
     .main {
         padding-left: 30px;
         //background-color: tomato;
-        min-width: 1340px;
+        min-width: 1450px;
         height: 880px;
 
         .main_top {
@@ -298,7 +307,7 @@ import page from './details'
             .btn {
                 height: 45px;
                 width: 85px;
-                margin-left: 100px;
+                margin-left: 65px;
             }
         }
 
@@ -366,4 +375,5 @@ import page from './details'
             top: 40px;
         }
     }
+    
 </style>

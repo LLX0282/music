@@ -9,14 +9,14 @@ const routes = [
     component: () => import(  '../views/login.vue')
   },
   {
-  path: '/home',
+  path: '/',
   name: 'Home',
   component: () => import( '../components/Home.vue'),
   children: [
     {
       path: '/audioSystem',
       name: 'audioSystem',
-      component: () => import(  '../views/audioSystem/audioSystem.vue')
+      component: () => import(  '../views/audioSystem/audioSystem.vue'),
     },
     {
       path: '/comment',
@@ -44,6 +44,11 @@ const routes = [
       component: () => import(  '../views/adminSystem/adminSystem.vue')
     },
     {
+      path: '/musicDetail',
+      name: 'musicDetail',
+      component: () => import(  '../views/audioSystem/musicDetail.vue')
+    },
+    {
       path: '/propellingMovement',
       name: 'propellingMovement',
       component: () => import(  '../views/propellingMovement/propellingMovement.vue')
@@ -59,7 +64,12 @@ const routes = [
   path: '/increment',
   name: 'increment',
   component: () => import(  '../views/increment.vue')
-}
+},
+{
+  path: '/musicDetail',
+  name: 'musicDetail',
+  component: () => import(  '../views/audioSystem/musicDetail.vue')
+},
 ]
 
 const router = new VueRouter({

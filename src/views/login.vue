@@ -21,7 +21,7 @@
         data() {
             return {
                 username: "llx02",
-                password: "llx123."
+                password: "123456."
             }
         },
         mounted() {
