@@ -138,7 +138,6 @@
                 const isJPG = testmsg === 'jpg';
                 const isPNG = testmsg === 'png';
                 const isLt2M = file.size / 1024 / 1024 < 10;
-
                 if (!isJPG && !isPNG) {
                     this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
                 } else if (!isLt2M) {

@@ -27,7 +27,7 @@
         </div>
         <div class="all_btn">
             <el-button type="primary" @click="operate('enable')" class="btn">通过</el-button>
-            <el-button type="primary" @click="operate('disable')" class="btn">屏蔽</el-button>
+            <el-button type="primary" @click="operate('disable')" class="btn">驳回</el-button>
         </div>
         <!-- 管理员列表 -->
         <div class="user-list">
@@ -35,21 +35,21 @@
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
-                <el-table-column label="用户名" prop="nickName">
+                <el-table-column label="用户名" align='center' show-overflow-tooltip prop="nickName">
 
                 </el-table-column>
-                <el-table-column label="歌曲名" prop="songName">
+                <el-table-column label="歌曲名"  align='center' show-overflow-tooltip prop="songName">
 
                 </el-table-column>
-                <el-table-column label="评论内容" prop="content">
+                <el-table-column label="评论内容" align='center' show-overflow-tooltip prop="content">
 
                 </el-table-column>
-                <el-table-column label="评论时间" prop="createTime">
+                <el-table-column label="评论时间" align='center' show-overflow-tooltip prop="createTime">
 
                 </el-table-column>
-                <el-table-column prop="status" label="状态">
+                <el-table-column prop="status" align='center' show-overflow-tooltip label="状态">
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" align='center' show-overflow-tooltip>
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" @click="xiangqing(scope.row)" class="btn">详情</el-button>
                         <el-button size="mini" v-if="scope.row.status=='已通过'" type="danger"
@@ -65,7 +65,7 @@
                 <div class="foot">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                         :current-page.sync="page.pageNum" :page-sizes="[10, 20, 30, 40]"
-                        layout="sizes, prev, pager, next" :total="1000">
+                        layout="sizes, prev, pager, next" :total="page.total">
                     </el-pagination>
                 </div>
             </div>
@@ -144,8 +144,11 @@
                 var chinaStandard = this.value2.toString()
                 var Str = chinaStandard.lastIndexOf("\,");
                 console.log(Str)
-                this.value2 = this.timeData(chinaStandard.substring(0, Str)) + '/' + this.timeData(chinaStandard
-                    .substring(Str + 1, chinaStandard.length))
+                if(this.value2!=''){
+                  this.value2 = this.timeData(chinaStandard.substring(0, Str)) + '/' + this.timeData(chinaStandard
+                    .substring(Str + 1, chinaStandard.length))  
+                }
+                
                 console.log(this.value2)
                 this.getData()
             },
@@ -166,6 +169,7 @@
                 this.input = ''
                 this.value2 = ''
                 this.value = ''
+                this.getData()
             },
             getData() { //显示数据
                 this.$axios.get("prod-api/music/backend/comment/list?" + "pageNum=" + this.page.pageNum + "&pageSize=" +
@@ -174,6 +178,7 @@
                     if (res.data.code = 200) {
                         console.log(res.data.rows)
                         this.tableData = res.data.rows
+                        this.page.total = res.data.total
                         for (var index in this.tableData) {
                             if (this.tableData[index].status == 0) {
                                 this.tableData[index].status = '已通过'
@@ -191,7 +196,7 @@
                     this.ask(cut)
                 } else if (cut == 'enable' && this.judgeState(cut) == 0) {
                     this.$message({
-                        message: '已启用的账号不能启用',
+                        message: '已通过的账号不能通过',
                         type: 'error'
                     });
                 }
@@ -200,7 +205,7 @@
                     this.ask(cut)
                 } else if (cut == 'disable' && this.judgeState(cut) == 0) {
                     this.$message({
-                        message: '已禁用的账号不能禁用',
+                        message: '已驳回的账号不能驳回',
                         type: 'error'
                     });
                 }
@@ -231,14 +236,14 @@
             judgeState(cut) { //判断状态
                 if (cut == 'enable') {
                     for (var index in this.multipleSelection) {
-                        if (this.multipleSelection[index].status == '已启用') {
+                        if (this.multipleSelection[index].status == '已通过') {
                             console.log(0)
                             return 0
                         }
                     }
                 } else {
                     for (var index in this.multipleSelection) {
-                        if (this.multipleSelection[index].status == '已禁用') {
+                        if (this.multipleSelection[index].status == '已驳回') {
                             return 0
                         }
                     }
@@ -274,11 +279,13 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
-                this.page.pageSize=val
-                this.getData()
+               
+                
             },
             handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
+                 console.log(`每页 ${val} 条`);
+                 this.page.pageSize=val
+                 this.getData()
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);

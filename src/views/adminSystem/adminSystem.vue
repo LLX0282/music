@@ -60,7 +60,7 @@
                 <div class="foot">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                         :current-page.sync="page.pageNum" :page-sizes="[10, 20, 30, 40]"
-                        layout="sizes, prev, pager, next" :total="1000">
+                        layout="sizes, prev, pager, next" :total="page.total">
                     </el-pagination>
                 </div>
             </div>
@@ -134,6 +134,7 @@ import addAdmin from './addAdmin'
                     if(res.data.code=200){
                         console.log(res.data.rows)
                          this.tableData=res.data.rows
+                         this.page.total = res.data.total
                         for(var index in this.tableData )
                         {   
                             if( this.tableData[index].status==0){

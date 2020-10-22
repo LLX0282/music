@@ -13,7 +13,7 @@
                         <div class="upImg">
                             <!-- 上传图片 -->
                             <el-form-item label="主题图片" prop="title">
-                            <el-upload :limit=1 ref='upload' action="https://jsonplaceholder.typicode.com/posts/"
+                            <el-upload :limit=1 ref='upload' action="prod-api/music/common/upload"
                                 list-type="picture-card" :on-preview="handlePictureCardPreview"
                                 :before-upload='beforeAvatarUpload' :on-remove="handleRemove">
                                 <i class="el-icon-plus"></i>

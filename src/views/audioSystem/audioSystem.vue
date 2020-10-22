@@ -27,17 +27,17 @@
                             <div class="iconfont icon-yinle music"></div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="songName" label="作品名">
+                    <el-table-column prop="songName" align='center' show-overflow-tooltip label="作品名">
                     </el-table-column>
-                    <el-table-column prop="songTime" label="时长">
+                    <el-table-column prop="songTime" align='center' show-overflow-tooltip label="时长">
                     </el-table-column>
-                    <el-table-column prop="songTypeName" label="歌曲类型">
+                    <el-table-column prop="songTypeName" align='center' show-overflow-tooltip label="歌曲类型">
                     </el-table-column>
-                    <el-table-column prop="createTime" label="发布时间">
+                    <el-table-column prop="createTime" align='center' show-overflow-tooltip label="发布时间">
                     </el-table-column>
-                    <el-table-column prop="status" label="状态">
+                    <el-table-column prop="status" align='center' show-overflow-tooltip label="状态">
                     </el-table-column>
-                    <el-table-column label="操作">
+                    <el-table-column label="操作" >
                         <template slot-scope="scope">
                             <el-button v-if="scope.row.status=='审核中'||scope.row.status=='已驳回'" size="mini" type="success" @click.stop="handleEdit('approved', scope.row.songId)">通过
                             </el-button>
@@ -50,7 +50,7 @@
                 <div class="foot">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                         :current-page.sync="page.pageNum" :page-sizes="[10, 20, 30, 40]"
-                        layout="sizes, prev, pager, next" :total="1000">
+                        layout="sizes, prev, pager, next" :total="page.total">
                     </el-pagination>
                 </div>
             </div>
@@ -95,6 +95,7 @@
                     if (res.data.code = 200) {
                         console.log(res.data.rows)
                         this.alltableData = res.data.rows
+                        this.page.total = res.data.total
                         for (var index in this.alltableData) {
                             if (this.alltableData[index].status == 0) {
                                 this.alltableData[index].status = '审核中'
