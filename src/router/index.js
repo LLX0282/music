@@ -58,6 +58,11 @@ const routes = [
       name: 'addAdmin',
       component: () => import(  '../views/adminSystem/addAdmin.vue')
     },
+    {
+      path: '/adminRecord',
+      name: 'adminRecord',
+      component: () => import(  '../views/record/record.vue')
+    },
   ]
 }, 
 {

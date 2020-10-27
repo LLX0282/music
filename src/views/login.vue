@@ -20,8 +20,8 @@
 
         data() {
             return {
-                username: "llx02",
-                password: "123456."
+                username: "",
+                password: ""
             }
         },
         mounted() {
@@ -53,10 +53,6 @@
                         console.log("成功")
                         localStorage.setItem("token", res.data.token);
                         localStorage.setItem("username", this.username);
-                        this.$message({
-                            message: '登录成功',
-                            type: 'success'
-                        });
                         this.$axios.get("prod-api/music/common/getLoginInfo").then(res => {
                             if (res.data.code == 200) {
                                 console.log(res.data.roles[0])

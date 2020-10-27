@@ -17,7 +17,7 @@
             </template>
         </div>
         <div class="all_btn">
-            <el-button type="primary" @click="add" class="btn">添加</el-button>
+            <!-- <el-button type="primary" @click="add" class="btn">添加</el-button> -->
             <el-button type="primary" @click="operate('enable')" class="btn">启用</el-button>
             <el-button type="primary" @click="operate('disable')" class="btn">停用</el-button>
             <el-button type="primary" @click="reset()" class="btn">重置密码</el-button>

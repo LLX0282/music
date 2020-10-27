@@ -128,7 +128,8 @@
                         }
                     }]
                 },
-                value2: ''
+                value2: '',
+                value3:''
             }
         },
         mounted() {
@@ -145,8 +146,8 @@
                 var Str = chinaStandard.lastIndexOf("\,");
                 console.log(Str)
                 if(this.value2!=''){
-                  this.value2 = this.timeData(chinaStandard.substring(0, Str)) + '/' + this.timeData(chinaStandard
-                    .substring(Str + 1, chinaStandard.length))  
+                  this.value2 = this.timeData(chinaStandard.substring(0, Str)) 
+                  this.value3 = this.timeData(chinaStandard.substring(Str + 1, chinaStandard.length))  
                 }
                 
                 console.log(this.value2)
@@ -173,7 +174,7 @@
             },
             getData() { //显示数据
                 this.$axios.get("prod-api/music/backend/comment/list?" + "pageNum=" + this.page.pageNum + "&pageSize=" +
-                    this.page.pageSize + '&searchValue=' + this.input + '&createTime=' + this.value2 + '&status=' +
+                    this.page.pageSize + '&searchValue=' + this.input + '&beginTime=' + this.value2 +'&endTime=' + this.value3 + '&status=' +
                     this.value).then(res => {
                     if (res.data.code = 200) {
                         console.log(res.data.rows)

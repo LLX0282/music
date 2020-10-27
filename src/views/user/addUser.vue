@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog title="添加用户" :visible.sync="centerDialogVisible" width="800px" height= "700px" class="main" center>
+        <el-dialog title="添加用户" :before-close="cancle" :visible.sync="centerDialogVisible" width="800px" height= "700px" class="main" center>
             <div class="text">
                 <div class="admin_row">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -115,6 +115,11 @@
             },
             cancle(){//取消
                 this.centerDialogVisible = false
+                this.ruleForm.account=''
+                this.ruleForm.nickName=''
+                this.ruleForm.account=''
+                this.ruleForm.remark=''
+                this.ruleForm.sex=''
                 this.$parent.getData()
             }
         }

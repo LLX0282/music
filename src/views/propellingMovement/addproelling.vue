@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog title="添加推送" :visible.sync="centerDialogVisible" width="800px" height="700px" class="main" center>
+        <el-dialog :before-close="cancle" title="添加推送" :visible.sync="centerDialogVisible" width="800px" height="700px" class="main" center>
             <div class="text">
                 <div class="admin_row">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -15,7 +15,7 @@
                             <el-form-item label="主题图片" prop="title">
                             <el-upload :limit=1 ref='upload' action="prod-api/music/common/upload"
                                 list-type="picture-card" :on-preview="handlePictureCardPreview"
-                                :before-upload='beforeAvatarUpload' :on-remove="handleRemove">
+                                :before-upload='beforeAvatarUpload'  :on-remove="handleRemove">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                             </el-form-item>
@@ -43,6 +43,7 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 centerDialogVisible: false,
+                imgFile:{},
                 ruleForm: {
                     title: '',
                     introduce: '',
@@ -83,8 +84,13 @@
             },
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) => {
+                    console.log("asdf"+this.imgFile)
                     if (valid) {
-                        this.$axios.post("prod-api/music/backend/push/create", this.ruleForm).then(res => {
+                        this.$axios.post('prod-api/music/common/upload', this.imgFile).then(res => {
+                        if (200 == res.data.code) {
+                            console.log(res.data.fileName);
+                            this.ruleForm.imgUrl = res.data.fileName;
+                            this.$axios.post("prod-api/music/backend/push/create", this.ruleForm).then(res => {
                             if (res.data.code == 200) {
                                 this.centerDialogVisible = false
                                 this.$message({
@@ -100,6 +106,24 @@
                                 this.$parent.getData()
                             }
                         })
+                        }
+                    })
+                        // this.$axios.post("prod-api/music/backend/push/create", this.ruleForm).then(res => {
+                        //     if (res.data.code == 200) {
+                        //         this.centerDialogVisible = false
+                        //         this.$message({
+                        //             message: res.data.msg,
+                        //             type: 'success'
+                        //         });
+                        //         this.$parent.getData()
+                        //     } else {
+                        //         this.$message({
+                        //             message: res.data.msg,
+                        //             type: 'error'
+                        //         });
+                        //         this.$parent.getData()
+                        //     }
+                        // })
                     }
                 })
                 // this.$axios.post("prod-api/admin/create", this.ruleForm).then(res => {
@@ -109,7 +133,13 @@
             },
             cancle() { //取消
                 this.centerDialogVisible = false
+                this.ruleForm.title = ''
+                this.ruleForm.introduce = ''
+                this.ruleForm.imgUrl = ''
+                this.imgFile=''
                 this.$parent.getData()
+                this.$refs.upload.clearFiles();
+                console.log(1)
             },
             //文件列表移除文件时的钩子
             handleRemove(file) {
@@ -122,7 +152,7 @@
             },
             //上传文件之前的钩子
             beforeAvatarUpload(file) {
-                console.log(file)
+                console.log("我在上传")
                 var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
                 console.log(testmsg);
                 const isJPG = testmsg === 'jpg';
@@ -137,14 +167,14 @@
                     let fd = new FormData();
                     console.log(fd)
                     fd.append("file", file)
-
-                    console.log(fd)
-                    this.$axios.post('prod-api/music/common/upload', fd).then(res => {
-                        if (200 == res.data.code) {
-                            console.log(res.data.fileName);
-                            this.ruleForm.imgUrl = res.data.fileName;
-                        }
-                    })
+                    this.imgFile=fd
+                    console.log(this.imgFile)
+                    // this.$axios.post('prod-api/music/common/upload', fd).then(res => {
+                    //     if (200 == res.data.code) {
+                    //         console.log(res.data.fileName);
+                    //         this.ruleForm.imgUrl = res.data.fileName;
+                    //     }
+                    // })
                     // this.$axios.post('prod-api/music/common/upload', fd).then(res => {
                     //     if (200 == res.data.code) {
                     //         console.log(res.data.fileName);

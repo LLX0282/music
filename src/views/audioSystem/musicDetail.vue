@@ -3,7 +3,7 @@
         <div class="main_top">
             <ul class="top">
                 <li class="left">
-                    <img :src="'prod-api/'+this.Musicdetail.avatar">
+                    <img :src="'prod-api/'+this.Musicdetail.cover">
                 </li>
                 <li class=right>
                     <ul class="text">
@@ -26,7 +26,7 @@
                 </li>
             </ul>
             <ul class="center">
-                <li class="centerLeft">个性签名</li>
+                <li class="centerLeft">歌曲简介</li>
                 <li class="centerRight">
                     <audio :src="'prod-api/'+this.Musicdetail.file" controls="controls">
                         您的浏览器不支持 audio 标签。
@@ -34,7 +34,7 @@
                 </li>
             </ul>
             <div class="signature">
-                {{this.Musicdetail.remark}}
+                {{this.Musicdetail.introduce}}
             </div>
             <div class="musicText">
                 歌词

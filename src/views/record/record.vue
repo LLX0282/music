@@ -1,10 +1,11 @@
 <template>
     <div class="main">
         <div class="main_top">
-            <div class="name">用户名：</div>
-            <el-input v-model="input" class="work_name" placeholder="请输入内容"></el-input>
+            <!-- <div class="name">用户名：</div>
+            <el-input v-model="input" class="work_name" placeholder="请输入内容"></el-input> -->
             <template>
-                <div class="name-flag">状态：</div>
+                <div class="allSelect">
+                    <div class="name-flag">状态：</div>
                 <div class="select">
                     <el-select v-model="value" clearable placeholder="请选择">
                         <el-option class="select_sun" v-for="item in options" :key="item.value" :label="item.label"
@@ -12,43 +13,49 @@
                         </el-option>
                     </el-select>
                 </div>
-                <el-button type="primary" @click="getData" class="btn">查询</el-button>
-                <el-button type="primary" @click="clear" class="btnClear">重置</el-button>
+                </div>
+                
+                
             </template>
+            <div class="block time">
+                <span class="demonstration">时间：</span>
+                <el-date-picker v-model="value2" type="datetimerange" :picker-options="pickerOptions"
+                    range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="right">
+                </el-date-picker>
+                <el-button type="primary" @click="select" class="btn">查询</el-button>
+                <el-button type="primary" @click="clear" class="btnClear">重置</el-button>
+                </div>
         </div>
-        <div class="all_btn">
+        <!-- <div class="all_btn">
             <el-button type="primary" @click="add" class="btn">添加</el-button>
             <el-button type="primary" @click="operate('enable')" class="btn">启用</el-button>
             <el-button type="primary" @click="operate('disable')" class="btn">停用</el-button>
             <el-button type="primary" @click="reset()" class="btn">重置密码</el-button>
-        </div>
+        </div> -->
         <!-- 用户列表 -->
         <div class="user-list">
             <el-table ref="multipleTable" :data="tableData" height="470" style="width: 96%" tooltip-effect="dark" 
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" align='center' show-overflow-tooltip  width="55">
                 </el-table-column>
-                <el-table-column label="用户账号" align='center' show-overflow-tooltip  prop="account" >
+                <el-table-column label="操作对象" align='center' show-overflow-tooltip  prop="tableName" >
                 </el-table-column>
-                <el-table-column label="姓名" align='center' show-overflow-tooltip  prop="nickName" >
+                <el-table-column label="更新时间" align='center' show-overflow-tooltip  prop="updateTime" >
                 </el-table-column>
-                <el-table-column label="手机号" align='center' show-overflow-tooltip  prop="phoneNumber" >
+                
+                <el-table-column prop="updateBy" align='center' show-overflow-tooltip  label="操作人" >
                 </el-table-column>
-                <el-table-column prop="remark" align='center' show-overflow-tooltip  label="个人简介" >
+                <el-table-column prop="content" align='center' show-overflow-tooltip  label="操作内容" >
                 </el-table-column>
-                <el-table-column prop="sex" align='center' show-overflow-tooltip  label="性别" >
+                <el-table-column label="操作" align='center' show-overflow-tooltip  prop="operate" >
                 </el-table-column>
-                <el-table-column prop="email" align='center' show-overflow-tooltip  label="邮箱" >
-                </el-table-column>
-                <el-table-column label="状态" align='center' show-overflow-tooltip  prop="status" >
-                </el-table-column>
-                <el-table-column label="操作" align='center'>
+                <!-- <el-table-column label="操作" align='center'>
                     <template slot-scope="scope">
                         <el-button size="mini" v-if="scope.row.status=='已启用'" type="danger"  @click="handleEdit('disable', scope.row.userId)">停用</el-button>
                         <el-button size="mini" v-if="scope.row.status=='已禁用'" type="success" @click="handleEdit('enable', scope.row.userId)">启用
                         </el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <div class="block">
                     <div class="foot">
@@ -59,17 +66,41 @@
                     </div>
                </div>
         </div>
-        <add-user ref="addUser"></add-user>
     </div>
 </template>
 <script>
-import addUser from './addUser'
     export default {
-        components: { 
-            addUser,
-        },
         data() {
             return {
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
+                value2: '',
+                value3:'',
                 page: {
                     pages: 0, //
                     total: 0, //总共多少条
@@ -78,13 +109,27 @@ import addUser from './addUser'
                 },
                 input: '',
                 options: [{ //状态
-                    value: '0',
-                    label: '已启用'
-                }, {
-                    value: '1',
-                    label: '已停用'
+                    value: 'allTable',
+                    label: '全部'
+                },
+               
+                { //状态
+                    value: 'comment',
+                    label: '评论'
+                }, 
+                { //状态
+                    value: 'song_type',
+                    label: '分类'
+                }, 
+                { //状态
+                    value: 'sys_user',
+                    label: '用户'
+                }, 
+                 {
+                    value: 'song',
+                    label: '歌曲'
                 }],
-                value: '', //已选中
+                value: 'allTable', //已选中
                 multipleSelection: [], //选中的行
                 currentPage2: 1, //分页
                 tableData: []
@@ -95,62 +140,57 @@ import addUser from './addUser'
 
         },
         methods: {
+            select() {
+                console.log(this.value2.toString())
+                var chinaStandard = this.value2.toString()
+                var Str = chinaStandard.lastIndexOf("\,");
+                console.log(Str)
+                if(this.value2!=''){
+                  this.value2 = this.timeData(chinaStandard.substring(0, Str)) 
+                  this.value3 = this.timeData(chinaStandard.substring(Str + 1, chinaStandard.length))  
+                }
+                
+                console.log(this.value2)
+                this.getData()
+            },
+            timeData(chinaStandard) {
+                var date = new Date(chinaStandard);
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                var minute = date.getMinutes();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                let time = y + '-' + m + '-' + d + ' ' + h + ':' + minute;
+                return time
+            },
             getData(){//显示数据
-                this.$axios.get("prod-api/music/backend/user/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&searchValue='+this.input+'&status='+this.value).then(res=>{
+                this.$axios.get("prod-api/music/backend/log/list?"+"pageNum="+this.page.pageNum+"&pageSize="+this.page.pageSize+'&tableName='+this.value+"&beginTime="+this.value2+"&endTime="+this.value3).then(res=>{
                     if(res.data.code=200){
-                        console.log(res.data.rows)
+                        console.log(res.data)
                         this.tableData=res.data.rows
-                        for(var index in this.tableData )
-                        {   if(this.tableData[index].sex==0){
-                            this.tableData[index].sex='男'
+                        for(var index in this.tableData){
+                            if(this.tableData[index].tableName=='comment'){
+                                    this.tableData[index].tableName="评论"
+                            }else if(this.tableData[index].tableName=='song_type'){
+                                    this.tableData[index].tableName="分类"
                             }
-                            else if(this.tableData[index].sex==1)
-                            this.tableData[index].sex='女'
-                            if( this.tableData[index].status==0){
-                                this.tableData[index].status='已启用'
-                                
+                            else if(this.tableData[index].tableName=='sys_user'){
+                                    this.tableData[index].tableName="用户"
                             }
-                            else if(this.tableData[index].status==1){
-                                this.tableData[index].status='已禁用'
+                            else if(this.tableData[index].tableName=='push'){
+                                    this.tableData[index].tableName="推送"
+                            }
+                            else if(this.tableData[index].tableName=='song'){
+                                    this.tableData[index].tableName="歌曲"
                             }
                         }
                     }
                 })
             },
-            add(){
-                this.$refs.addUser.openAdd();
-            },
-            reset(){
-                var arry=[]
-                for( var index in this.multipleSelection){
-                    arry.push(this.multipleSelection[index].userId)
-                }
-                this.$axios.put('prod-api/music/backend/user/reset/'+arry).then(res=>{
-                    if(res.data.code==200){
-                        console.log('成功')
-                        this.getData()
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                    }else{
-                        this.getData()
-                        this.$message({
-                            message: '操作失败',
-                            type: 'error'
-                        });
-                    }
-                })
-            },
-            toggleSelection(rows) {
-                if (rows) {
-                    rows.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-            },
+            
             handleSelectionChange(val) {
                 this.multipleSelection = val;
                 console.log(this.multipleSelection)
@@ -167,87 +207,10 @@ import addUser from './addUser'
                 this.getData()
             },
             clear(){//清楚输入想
-                this.input=''
-                this.value=''
-            },
-            handleEdit(cut,data){//行操作
-                console.log(data)
-                this.$axios.put('prod-api/music/backend/user/'+cut+'/'+data).then(res=>{
-                    if(res.data.code==200){
-                        console.log('成功')
-                        this.getData()
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                    }else{
-                        this.getData()
-                        this.$message({
-                            message: '操作失败',
-                            type: 'error'
-                        });
-                    }
-                })
-            },
-            operate(cut){//启用/停用
-                if(cut=='enable'&&this.judgeState(cut)!=0){
-                    console.log(this.judgeState)
-                    this.ask(cut)
-                }else if(cut=='enable'&&this.judgeState(cut)==0){
-                    this.$message({
-                            message: '已启用的账号不能启用',
-                            type: 'error'
-                        });
-                }
-                if(cut=='disable'&&this.judgeState(cut)!=0){
-                    console.log(this.judgeState)
-                    this.ask(cut)
-                }else if(cut=='disable'&&this.judgeState(cut)==0){
-                    this.$message({
-                            message: '已禁用的账号不能禁用',
-                            type: 'error'
-                        });
-                }
-            },
-            ask(cut){//发送请求
-                var arry=[]
-                for( var index in this.multipleSelection){
-                    arry.push(this.multipleSelection[index].userId)
-                }
-                console.log(this.multipleSelection[0])
-                this.$axios.put('prod-api/music/backend/user/'+cut+'/'+arry).then(res=>{
-                    if(res.data.code==200){
-                        console.log('成功')
-                        this.getData()
-                        this.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                    }else{
-                        this.getData()
-                        this.$message({
-                            message: '操作失败',
-                            type: 'error'
-                        });
-                    }
-                })
-            },
-            judgeState(cut){//判断状态
-                if (cut=='enable'){
-                    for(var index in this.multipleSelection){
-                        if(this.multipleSelection[index].status=='已启用'){
-                            console.log(0)
-                            return 0
-                        }
-                    }
-                }
-                else{
-                    for(var index in this.multipleSelection){
-                        if(this.multipleSelection[index].status=='已禁用'){
-                            return 0
-                        }
-                    }
-                }
+                this.value3=''
+                this.value2=''
+                this.value="allTable"
+                this.getData()
             },
         }
     }
@@ -261,15 +224,22 @@ import addUser from './addUser'
         height: 880px;
 
         .main_top {
-            margin: 40px 0px 0px 20px;
+            margin: 40px 0px 0px -43px;
             line-height: 50px;
             height: 50px;
-
+            position: relative;
+            .allSelect{
+                float: left;
+            }
+            .block{
+                left: 380px;
+                position: absolute;
+            }
             //overflow: hidden;
             .btn {
                 height: 45px;
                 width: 85px;
-                margin-left: 300px;
+                margin-left: 200px;
             }
             .btnClear{
                 height: 45px;
@@ -297,6 +267,8 @@ import addUser from './addUser'
 
         .select {
             float: left;
+            //margin-right: 50px;
+            z-index: 1000;
         }
 
         .all_btn {
@@ -311,6 +283,7 @@ import addUser from './addUser'
 
     .user-list {
         margin-left: 20px;
+        margin-top: 40px;
     }
 
     .el-select-dropdown {

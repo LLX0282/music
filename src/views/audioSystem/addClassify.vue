@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-dialog title="分类新增" :visible.sync="centerDialogVisible" width="800px" height= "700px" class="main" center>
+        <el-dialog title="分类新增" :before-close="cancle" :visible.sync="centerDialogVisible" width="800px" height= "700px" class="main" center>
             <div class="text">
                 <div class="admin_row">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -72,6 +72,7 @@
             },
             cancle(){//取消
                 this.centerDialogVisible = false
+                this.ruleForm.name=''
                 this.$parent.getData()
             }
         }

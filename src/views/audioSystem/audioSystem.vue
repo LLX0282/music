@@ -29,8 +29,8 @@
                     </el-table-column>
                     <el-table-column prop="songName" align='center' show-overflow-tooltip label="作品名">
                     </el-table-column>
-                    <el-table-column prop="songTime" align='center' show-overflow-tooltip label="时长">
-                    </el-table-column>
+                    <!-- <el-table-column prop="songTime" align='center' show-overflow-tooltip label="时长">
+                    </el-table-column> -->
                     <el-table-column prop="songTypeName" align='center' show-overflow-tooltip label="歌曲类型">
                     </el-table-column>
                     <el-table-column prop="createTime" align='center' show-overflow-tooltip label="发布时间">
