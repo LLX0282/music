@@ -63,6 +63,11 @@ const routes = [
       name: 'adminRecord',
       component: () => import(  '../views/record/record.vue')
     },
+    {
+      path: '/ststistics',
+      name: 'ststistics',
+      component: () => import(  '../views/ststistics/ststistics.vue')
+    },
   ]
 }, 
 {

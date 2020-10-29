@@ -30,7 +30,11 @@
                     <i class="iconfont icon-push icon_pic3 icon_witch"></i>
                     <span slot="title">推送</span>
                 </el-menu-item>
-                <el-menu-item index="/adminRecord">
+                <el-menu-item index="/ststistics">
+                    <i class="el-icon-help icon_pic3 icon_witch"></i>
+                    <span slot="title">统计</span>
+                </el-menu-item>
+                <el-menu-item v-if="role=='admin'" index="/adminRecord">
                     <i class="iconfont icon-jilu icon_pic4"></i>
                     <span slot="title">管理员操作记录</span>
                 </el-menu-item>
