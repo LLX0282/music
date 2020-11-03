@@ -7,6 +7,9 @@
                         <el-form-item label="推送主题" prop="title">
                             <el-input v-model="ruleForm.title"></el-input>
                         </el-form-item>
+                        <el-form-item label="跳转地址" prop="adUrl">
+                            <el-input v-model="ruleForm.adUrl"></el-input>
+                        </el-form-item>
                         <!-- <el-form-item label="发布人" prop="createBy">
                             <el-input :disabled="true" v-model="ruleForm.createBy"></el-input>
                         </el-form-item> -->
@@ -49,7 +52,8 @@
                     introduce: '',
                     //createBy: '',
                     imgUrl:'',
-                    pushId:''
+                    pushId:'',
+                    adUrl:''
                 },
                 fileList: [{ url: ''}],
                 rules: {
@@ -65,11 +69,11 @@
                             trigger: 'blur'
                         }
                     ],
-                    // createBy: [{
-                    //     required: true,
-                    //     message: '请输入姓名',
-                    //     trigger: 'blur'
-                    // }],
+                    adUrl: [{
+                        required: true,
+                        message: '请输入跳转地址',
+                        trigger: 'blur'
+                    }],
                     introduce: [{
                         required: true,
                         message: '请输入备注',
@@ -87,6 +91,7 @@
                 this.ruleForm.imgUrl= val.imgUrl
                 this.ruleForm.introduce= val.introduce
                 this.ruleForm.pushId= val.pushId
+                this.ruleForm.adUrl= val.adUrl
                 console.log(val.imgUrl)
                 //this.ruleForm.createBy = localStorage.getItem("username")
             },

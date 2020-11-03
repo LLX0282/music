@@ -299,7 +299,7 @@
     line-height: 28px;
 }
 .block{
-        width: 100%;
+        
         position: relative;
         .foot{
             position: absolute;

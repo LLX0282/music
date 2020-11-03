@@ -71,11 +71,11 @@ import amend from './amend'
             margin-right: 100px;
             font-size: 20px;
             position: relative;
-
+           
             .select {
                 position: absolute;
                 width: 200px;
-                height: 110px;
+                
                 background-color: #52575b;
                 top: 79px;
                 left: -80px;

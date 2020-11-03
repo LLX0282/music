@@ -1,11 +1,15 @@
 <template>
     <div>
-        <el-dialog :before-close="cancle" title="添加推送" :visible.sync="centerDialogVisible" width="800px" height="700px" class="main" center>
+        <el-dialog :before-close="cancle" title="添加推送" :visible.sync="centerDialogVisible" width="800px" height="700px"
+            class="main" center>
             <div class="text">
                 <div class="admin_row">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                         <el-form-item label="推送主题" prop="title">
                             <el-input v-model="ruleForm.title"></el-input>
+                        </el-form-item>
+                        <el-form-item label="跳转地址" prop="adUrl">
+                            <el-input v-model="ruleForm.adUrl"></el-input>
                         </el-form-item>
                         <!-- <el-form-item label="发布人" prop="createBy">
                             <el-input :disabled="true" v-model="ruleForm.createBy"></el-input>
@@ -13,13 +17,13 @@
                         <div class="upImg">
                             <!-- 上传图片 -->
                             <el-form-item label="主题图片" prop="title">
-                            <el-upload :limit=1 ref='upload' action="prod-api/music/common/upload"
-                                list-type="picture-card" :on-preview="handlePictureCardPreview"
-                                :before-upload='beforeAvatarUpload'  :on-remove="handleRemove">
-                                <i class="el-icon-plus"></i>
-                            </el-upload>
+                                <el-upload :limit=1 ref='upload' action="prod-api/music/common/upload"
+                                    list-type="picture-card" :on-preview="handlePictureCardPreview"
+                                    :before-upload='beforeAvatarUpload' :on-remove="handleRemove">
+                                    <i class="el-icon-plus"></i>
+                                </el-upload>
                             </el-form-item>
-                            
+
                         </div>
                         <el-form-item label="主题内容" prop="introduce">
                             <el-input type="textarea" v-model="ruleForm.introduce"></el-input>
@@ -43,26 +47,28 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 centerDialogVisible: false,
-                imgFile:{},
+                imgFile: {},
                 ruleForm: {
                     title: '',
                     introduce: '',
                     //createBy: '',
-                    imgUrl:''
+                    imgUrl: '',
+                    adUrl: ''
                 },
                 rules: {
                     title: [{
                             required: true,
-                            message: '请输入账号',
+                            pattern: /^[\u4e00-\u9fa5]+$/,
+                            message: '请输入1-10位中文',
                             trigger: 'blur'
                         },
-                        {
-                            min: 3,
-                            max: 11,
-                            message: '长度在 3 到 5 个字符',
-                            trigger: 'blur'
-                        }
+
                     ],
+                    adUrl: [{
+                        required: true,
+                        message: '请输入跳转地址',
+                        trigger: 'blur'
+                    }],
                     // createBy: [{
                     //     required: true,
                     //     message: '请输入姓名',
@@ -84,30 +90,43 @@
             },
             add(ruleForm) {
                 this.$refs[ruleForm].validate((valid) => {
-                    console.log("asdf"+this.imgFile)
+                    console.log("asdf" + this.imgFile)
                     if (valid) {
                         this.$axios.post('prod-api/music/common/upload', this.imgFile).then(res => {
-                        if (200 == res.data.code) {
-                            console.log(res.data.fileName);
-                            this.ruleForm.imgUrl = res.data.fileName;
-                            this.$axios.post("prod-api/music/backend/push/create", this.ruleForm).then(res => {
-                            if (res.data.code == 200) {
-                                this.centerDialogVisible = false
-                                this.$message({
-                                    message: res.data.msg,
-                                    type: 'success'
-                                });
-                                this.$parent.getData()
-                            } else {
-                                this.$message({
-                                    message: res.data.msg,
-                                    type: 'error'
-                                });
-                                this.$parent.getData()
+                            if (200 == res.data.code) {
+                                console.log(res.data.fileName);
+                                this.ruleForm.imgUrl = res.data.fileName;
+                                this.$axios.post("prod-api/music/backend/push/create", this.ruleForm)
+                                    .then(res => {
+                                        if (res.data.code == 200) {
+                                            this.centerDialogVisible = false
+                                            this.$message({
+                                                message: res.data.msg,
+                                                type: 'success'
+                                            });
+                                            this.ruleForm.title = ''
+                                            this.ruleForm.introduce = ''
+                                            this.ruleForm.imgUrl = ''
+                                            this.ruleForm.adUrl = ''
+                                            this.imgFile = ''
+                                            this.$refs.upload.clearFiles();
+                                            this.$parent.getData()
+                                        } else {
+                                            this.$message({
+                                                message: res.data.msg,
+                                                type: 'error'
+                                            });
+                                            this.ruleForm.title = ''
+                                            this.ruleForm.introduce = ''
+                                            this.ruleForm.imgUrl = ''
+                                            this.imgFile = ''
+                                            this.ruleForm.adUrl = ''
+                                            this.$refs.upload.clearFiles();
+                                            this.$parent.getData()
+                                        }
+                                    })
                             }
                         })
-                        }
-                    })
                         // this.$axios.post("prod-api/music/backend/push/create", this.ruleForm).then(res => {
                         //     if (res.data.code == 200) {
                         //         this.centerDialogVisible = false
@@ -136,7 +155,8 @@
                 this.ruleForm.title = ''
                 this.ruleForm.introduce = ''
                 this.ruleForm.imgUrl = ''
-                this.imgFile=''
+                this.imgFile = ''
+                this.ruleForm.adUrl = ''
                 this.$parent.getData()
                 this.$refs.upload.clearFiles();
                 console.log(1)
@@ -167,7 +187,7 @@
                     let fd = new FormData();
                     console.log(fd)
                     fd.append("file", file)
-                    this.imgFile=fd
+                    this.imgFile = fd //全局
                     console.log(this.imgFile)
                     // this.$axios.post('prod-api/music/common/upload', fd).then(res => {
                     //     if (200 == res.data.code) {

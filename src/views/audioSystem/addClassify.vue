@@ -30,14 +30,10 @@
                 rules: {
                     name: [{
                             required: true,
-                            message: '分类名',
-                            trigger: 'blur'
+                            pattern: /^[\u4e00-\u9fa5]+$/,
+                            message: '请输入1-10位中文',
                         },
-                        {
-                            
-                            message: '请输入分类名',
-                            trigger: 'blur'
-                        }
+                        
                     ],
                     
                 }

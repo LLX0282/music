@@ -4,7 +4,7 @@ module.exports = {
 	devServer: {
 		proxy: {
 			'/prod-api': {
-				target:  'http://172.22.132.48:8080', //后台ip地址
+				target:  'http://172.22.132.6:8080', //后台ip地址
 				changeOrigin: true, // 跨域访问设置，true代表跨域
 				ws: true,
 				secure: false, // false为http访问，true为https访问
